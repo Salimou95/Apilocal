@@ -38,5 +38,6 @@ async function fetchMeteoData() {
   }
 }
 
+
 // Appeler la fonction pour récupérer et afficher les données
 fetchMeteoData();
