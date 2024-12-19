@@ -2,6 +2,7 @@ import express from "express";
 import { readFile, writeFile } from "fs/promises";
 import { existsSync } from "fs"; // Utiliser fs classique pour existsSync
 import path from "path";
+import cors from "cors";
 
 const app = express();
 const PORT = 5000;
@@ -9,6 +10,7 @@ const DATA_FILE = "./data.json";
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Vérifie si le fichier data.json existe, sinon le crée avec un tableau vide
 (async () => {
