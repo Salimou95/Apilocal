@@ -75,3 +75,9 @@ Une page HTML est incluse dans le projet et permet de récupérer et d'afficher 
   - `/api/meteo/temperatures` : les températures.
   - `/api/meteo/vent` : les vitesses du vent.
 - Affiche ces données dans un tableau.
+
+## Graphique météo
+
+Voici un aperçu du graphique météo généré par l'application :
+
+![Graphique Météo](graphMeteo.jpg)

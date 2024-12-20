@@ -81,14 +81,16 @@ app.get("/api/meteo/localisation", async (req, res) => {
     const data = await readFile(DATA_FILE, "utf8");
     const jsonData = JSON.parse(data);
     //const loc = jsonData.latitude; // Latitude
+
     // Obtenir l'heure actuelle au format lisible
-    const now = new Date();
-    const formattedTimestamp = now
+    const now = new Date(); // Date formatée UTC 0
+    const utcPlus1 = new Date(now.getTime() + 3600000); // Ajoute 1 heure (3600000 ms) pour utc + 1 (heure française)
+    const formattedTimestamp = utcPlus1
       .toISOString()
       .replace("T", " ")
-      .split(".")[0]; // Format : YYYY-MM-DD HH:mm:ss
+      .split(".")[0]; // Format : YYYY-MM-DD HH:mm:ss permet de garder l'indice 0 et sup les mili
     const objet = {
-      timestamp: formattedTimestamp, // Date formatée UTC 0
+      timestamp: formattedTimestamp,
       data: {
         latitude: jsonData.latitude,
         longitude: jsonData.longitude,
