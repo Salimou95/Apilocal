@@ -3,7 +3,7 @@ import { readFile, writeFile } from "fs/promises";
 import { existsSync } from "fs"; // Utiliser fs classique pour existsSync
 import path from "path";
 import cors from "cors";
-import { ChartJSNodeCanvas } from "chartjs-node-canvas";
+import { Chart } from "chart.js"; // Import de chart.js pour créer le graphique
 
 const app = express();
 const PORT = 5000;
@@ -75,93 +75,97 @@ app.get("/api/meteo/vent", async (req, res) => {
   }
 });
 
-// Route pour générer un graphique
 // Route pour générer un graphique avec température et vent
-// app.get("/api/meteo/graph", async (req, res) => {
-//   try {
-//     const data = await readFile(DATA_FILE, "utf8");
-//     const jsonData = JSON.parse(data);
+app.get("/api/meteo/graph", async (req, res) => {
+  try {
+    // Lire les données depuis le fichier JSON
+    const data = await readFile(DATA_FILE, "utf8");
+    const jsonData = JSON.parse(data);
 
-//     const dates = jsonData.hourly.time; // Les dates
-//     const temperatures = jsonData.hourly.temperature_2m; // Températures
-//     const windSpeeds = jsonData.hourly.wind_speed_10m; // Vitesses du vent
+    // Extraire les données nécessaires
+    const dates = jsonData.hourly.time; // Les dates
+    const temperatures = jsonData.hourly.temperature_2m; // Températures
+    const windSpeeds = jsonData.hourly.wind_speed_10m; // Vitesses du vent
 
-//     // Créer un graphique avec ChartJSNodeCanvas
-//     const width = 800; // Largeur du graphique
-//     const height = 400; // Hauteur du graphique
-//     const chartCallback = (ChartJS) => {
-//       ChartJS.defaults.font.size = 16; // Optionnel, pour configurer Chart.js globalement
-//     };
-//     const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback });
+    // Créer un canvas avec le module 'canvas'
+    const width = 800; // Largeur du graphique
+    const height = 400; // Hauteur du graphique
+    const canvas = createCanvas(width, height); // Créer un canvas
+    const ctx = canvas.getContext("2d"); // Récupérer le contexte pour dessiner
 
-//     const configuration = {
-//       type: "line",
-//       data: {
-//         labels: dates,
-//         datasets: [
-//           {
-//             label: "Température (°C)",
-//             data: temperatures,
-//             borderColor: "rgba(75, 192, 192, 1)",
-//             backgroundColor: "rgba(75, 192, 192, 0.2)",
-//             borderWidth: 2,
-//             fill: true,
-//             yAxisID: 'y1', // L'axe Y pour la température
-//           },
-//           {
-//             label: "Vitesse du vent (m/s)",
-//             data: windSpeeds,
-//             borderColor: "rgba(255, 99, 132, 1)",
-//             backgroundColor: "rgba(255, 99, 132, 0.2)",
-//             borderWidth: 2,
-//             fill: false,
-//             yAxisID: 'y2', // L'axe Y secondaire pour le vent
-//           },
-//         ],
-//       },
-//       options: {
-//         plugins: {
-//           legend: {
-//             position: "top",
-//           },
-//           title: {
-//             display: true,
-//             text: "Température et Vitesse du Vent",
-//           },
-//         },
-//         scales: {
-//           x: {
-//             title: {
-//               display: true,
-//               text: "Date",
-//             },
-//           },
-//           y: {
-//             title: {
-//               display: true,
-//               text: "Température (°C)",
-//             },
-//             beginAtZero: false,
-//           },
-//           y2: { // Axe Y secondaire pour la vitesse du vent
-//             title: {
-//               display: true,
-//               text: "Vitesse du Vent (m/s)",
-//             },
-//             position: "right", // Placer cet axe à droite
-//           },
-//         },
-//       },
-//     };
+    // Créer une nouvelle instance de Chart.js en utilisant le contexte du canvas
+    const chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: dates, // Les dates sur l'axe X
+        datasets: [
+          {
+            label: "Température (°C)",
+            data: temperatures,
+            borderColor: "rgba(75, 192, 192, 1)", // Couleur de la ligne de température
+            backgroundColor: "rgba(75, 192, 192, 0.2)", // Fond sous la courbe
+            borderWidth: 2,
+            fill: true, // Remplir sous la courbe
+            yAxisID: 'y1', // Axe Y pour la température
+          },
+          {
+            label: "Vitesse du vent (m/s)",
+            data: windSpeeds,
+            borderColor: "rgba(255, 99, 132, 1)", // Couleur de la ligne du vent
+            backgroundColor: "rgba(255, 99, 132, 0.2)", // Fond sous la courbe du vent
+            borderWidth: 2,
+            fill: false, // Pas de remplissage sous la courbe du vent
+            yAxisID: 'y2', // Axe Y secondaire pour la vitesse du vent
+          },
+        ],
+      },
+      options: {
+        plugins: {
+          legend: {
+            position: "top", // Position de la légende
+          },
+          title: {
+            display: true, // Affichage du titre
+            text: "Température et Vitesse du Vent", // Titre du graphique
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: "Date", // Légende de l'axe X
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: "Température (°C)", // Légende de l'axe Y pour la température
+            },
+            beginAtZero: false, // Ne pas forcer à commencer à zéro
+          },
+          y2: {
+            title: {
+              display: true,
+              text: "Vitesse du Vent (m/s)", // Légende de l'axe Y pour la vitesse du vent
+            },
+            position: "right", // L'axe Y secondaire sera à droite
+          },
+        },
+      },
+    });
 
-//     const imageBuffer = await chartJSNodeCanvas.renderToBuffer(configuration);
-//     res.set("Content-Type", "image/png");
-//     res.send(imageBuffer);
-//   } catch (err) {
-//     console.error("Erreur lors de la génération du graphique :", err);
-//     res.status(500).json({ message: "Erreur serveur" });
-//   }
-// });
+    // Convertir le graphique en image (buffer) au format PNG
+    const imageBuffer = canvas.toBuffer("image/png");
+
+    // Envoyer l'image PNG au client
+    res.set("Content-Type", "image/png");
+    res.send(imageBuffer);
+  } catch (err) {
+    console.error("Erreur lors de la génération du graphique :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
 
 
 // Lancer le serveur
