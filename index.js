@@ -8,7 +8,8 @@ const app = express();
 const PORT = 5000;
 const DATA_FILE = "./data.json";
 
-// Middleware
+// Middleware Ce middleware permet de parser les données JSON envoyées dans une requête HTTP et les transforme
+// en objet JavaScript afin que tu puisses y accéder facilement via req.body.
 app.use(express.json());
 app.use(cors());
 
@@ -87,7 +88,7 @@ app.get("/api/meteo/localisation", async (req, res) => {
       .replace("T", " ")
       .split(".")[0]; // Format : YYYY-MM-DD HH:mm:ss
     const objet = {
-      timestamp: formattedTimestamp, // Date formatée
+      timestamp: formattedTimestamp, // Date formatée UTC 0
       data: {
         latitude: jsonData.latitude,
         longitude: jsonData.longitude,
