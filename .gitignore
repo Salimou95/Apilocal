@@ -44,7 +44,7 @@ jspm_packages/
 
 #data
 #data en partage pour faciliter le test data.json
-routes.js
+.routes.js
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
