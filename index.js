@@ -74,6 +74,34 @@ app.get("/api/meteo/vent", async (req, res) => {
   }
 });
 
+// Route pour récupérer la latitute/longitude/élévation de la prise de données
+app.get("/api/meteo/localisation", async (req, res) => {
+  try {
+    const data = await readFile(DATA_FILE, "utf8");
+    const jsonData = JSON.parse(data);
+    //const loc = jsonData.latitude; // Latitude
+    // Obtenir l'heure actuelle au format lisible
+    const now = new Date();
+    const formattedTimestamp = now
+      .toISOString()
+      .replace("T", " ")
+      .split(".")[0]; // Format : YYYY-MM-DD HH:mm:ss
+    const objet = {
+      timestamp: formattedTimestamp, // Date formatée
+      data: {
+        latitude: jsonData.latitude,
+        longitude: jsonData.longitude,
+        elevation: jsonData.elevation,
+      },
+    };
+    //console.log(jsonData);
+    res.json(objet);
+  } catch (err) {
+    console.error("Erreur lors de la lecture du fichier JSON:", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
 // Lancer le serveur
 app.listen(PORT, () => {
   console.log(`Serveur démarré sur http://localhost:${PORT}`);
