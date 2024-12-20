@@ -15,7 +15,9 @@
     "chart.js": "^3.9.1",
     "chartjs-node-canvas": "^4.1.6",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "plotly.js": "^2.35.3",
+    "plotly.js-dist-min": "^2.35.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
