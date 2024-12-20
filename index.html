@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Météo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Informations Météorologiques</h1>
+  </header>
+  <main>
+    <div id="meteo-container">
+      <p><strong>Légende :</strong></p>
+      <ul>
+        <li><strong>Date :</strong> Affichée dans la première colonne.</li>
+        <li><strong>Température :</strong> Affichée dans la deuxième colonne, en degrés Celsius.</li>
+        <li><strong>Vitesse du vent :</strong> Affichée dans la troisième colonne, en km/h.</li>
+      </ul>
+      <table id="meteo-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Température (°C)</th>
+            <th>Vitesse du Vent (km/h)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Les données seront insérées ici par le script -->
+        </tbody>
+      </table>
+    </div>
+  </main>
+  <footer>
+    <p>© 2024 - Données météorologiques en temps réel</p>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
